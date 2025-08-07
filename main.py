@@ -37,7 +37,7 @@ def main():
         cv = Converter()
         decoded_audio_buffer = base64.b64decode(buffer)
         result = cv.transcribe(decoded_audio_buffer)
-        print("Transcription result:", result)
+        print(result)
         
     except Exception as e:
         print(f"Error processing audio: {e}", file=sys.stderr)
