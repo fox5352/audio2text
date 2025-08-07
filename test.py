@@ -4,7 +4,6 @@ import base64
 import subprocess
 from pathlib import Path
 
-
 # Use venv Python interpreter
 if sys.platform != "win32":
     venv_python = Path("venv/bin/python")
@@ -13,10 +12,11 @@ else:
 
 # Load audio file
 try:
-    with open("./assets/test.mp3", "rb") as f:
-        audio_data = f.read()
+    with open("./assets/test.raw", "rb") as f:
+        buffer = f.read()
+        audio_data = base64.b64encode(buffer).decode("utf-8")
 except FileNotFoundError:
-    print("Missing test file: ./assets/test.mp3", file=sys.stderr)
+    print("Error: test.raw file not found in assets directory", file=sys.stderr)
     sys.exit(1)
 
 
@@ -39,7 +39,7 @@ def test_without_audio_buffer():
     result = process(cmd)
     print("STDERR:", result.stderr.strip())
     print("RETURN CODE:", result.returncode)
-    
+
     expected_msg = "Expected non-zero exit code for empty audio buffer"
     assert result.returncode != 0, expected_msg
 
@@ -47,16 +47,15 @@ def test_without_audio_buffer():
 def test_with_audio_buffer():
     """Test script behavior with valid audio buffer."""
     print("Running test_with_audio_buffer...")
-    encoded = base64.b64encode(audio_data).decode("utf-8")
     cmd = [str(venv_python), "main.py", "-a", "-"]
-    result = process(cmd, input_text=encoded)
+    result = process(cmd, input_text=audio_data)
     print("STDOUT:", result.stdout.strip())
     print("STDERR:", result.stderr.strip())
     print("RETURN CODE:", result.returncode)
-    
+
     expected_msg = "Expected successful exit with valid audio buffer"
     assert result.returncode == 0, expected_msg
-    assert "decoded successfully" in result.stdout.lower()
+    assert "transcription result:" in result.stdout.lower()
 
 
 if __name__ == "__main__":
