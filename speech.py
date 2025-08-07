@@ -9,8 +9,8 @@ class Converter:
         configs = [
             (44100, 2),  # Most common: 44.1kHz, 16-bit
             (16000, 2),  # Phone quality: 16kHz, 16-bit
-            # (48000, 2),  # Professional: 48kHz, 16-bit  
-            # (22050, 2),  # Half CD: 22kHz, 16-bit
+            (48000, 2),  # Professional: 48kHz, 16-bit  
+            (22050, 2),  # Half CD: 22kHz, 16-bit
         ]
         
         for sample_rate, sample_width in configs:
