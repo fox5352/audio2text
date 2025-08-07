@@ -1,7 +1,7 @@
 import subprocess
 
 if __name__ == "__main__":
-    cmd = ["pyinstaller", "--onefile", "main.py"]
+    cmd = ["pyinstaller", "--onefile", "main.py", "--name", "audio2text"]
 
     process = subprocess.Popen(
         cmd,
