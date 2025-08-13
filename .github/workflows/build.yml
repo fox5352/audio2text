@@ -1,5 +1,5 @@
 # A friendly name for your workflow that will appear in the GitHub Actions tab.
-name: "build executables"
+name: Build executables
 
 # The event that triggers this workflow.
 # This workflow will run whenever a tag is pushed.
@@ -18,3 +18,22 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     
     runs-on: ${{ matrix.os }}
+
+    
+    # Define the steps to be executed within the job.
+    steps:
+      # Step 1: Checkout the repository code. This is essential for all workflows.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Set up the Python environment.
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'  # Specify the Python version to use
+
+      # Step 3: Run commands to verify the installation.
+      - name: Verify Python Installation
+        run: |
+          python --version
+          pip --version
