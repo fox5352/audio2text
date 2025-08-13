@@ -1,57 +1,62 @@
-# A friendly name for your workflow that will appear in the GitHub Actions tab.
 name: Build executables
 
-# The event that triggers this workflow.
-# This workflow will run whenever a tag is pushed.
 on:
   push:
     tags:
-      # Use '*' to match any tag name.
       - "v*.*.*"
 
-# Define the jobs that will run as part of this workflow.
 jobs:
   build:
-    # Use a strategy matrix to run the same job on multiple operating systems.
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
     
     runs-on: ${{ matrix.os }}
 
-    
-    # Define the steps to be executed within the job.
     steps:
-      # Step 1: Checkout the repository code. This is essential for all workflows.
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      # Step 2: Set up the Python environment.
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'  # Specify the Python version to use
+          python-version: '3.13'
 
-      # Step 3: Run commands to verify the installation.
       - name: Verify Python Installation
         run: |
-          # The 'actions/setup-python' action places python on the PATH.
-          # We can just call it directly.
           python --version
           pip --version
       
-      # Step 4: Install dependencies from requirements.txt.
-      - name: Install Dependencies
+      # Linux / macOS venv + deps
+      - name: Install Dependencies (Linux/Mac)
+        if: runner.os != 'Windows'
         run: |
-          # Create a virtual environment.
           python -m venv venv
-          # Upgrade pip within the virtual environment.
-          ./venv/bin/python -m pip install --upgrade pip
-          # Install dependencies using pip from the virtual environment.
-          ./venv/bin/pip install -r requirements.txt
-      
-      # Step 5: Build the executable using PyInstaller.
-      - name: Build Executable
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Windows venv + deps
+      - name: Install Dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
         run: |
-          # Use the python executable from the virtual environment to run your script.
-          ./venv/bin/python build.py
+          python -m venv venv
+          venv\Scripts\Activate.ps1
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      # Linux / macOS build
+      - name: Build Executable (Linux/Mac)
+        if: runner.os != 'Windows'
+        run: |
+          source venv/bin/activate
+          python build.py
+
+      # Windows build
+      - name: Build Executable (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          venv\Scripts\Activate.ps1
+          python build.py
