@@ -71,7 +71,7 @@ def build_executable(name_suffix=""):
 
 if __name__ == "__main__":
     # Accept optional name suffix from command line
-    name_suffix = sys.argv[1] if len(sys.argv) > 1 else ""
+    # name_suffix = sys.argv[1] if len(sys.argv) > 1 else ""
     
-    exit_code = build_executable(name_suffix)
+    exit_code = build_executable()
     sys.exit(exit_code)
