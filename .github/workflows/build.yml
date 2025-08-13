@@ -35,19 +35,23 @@ jobs:
       # Step 3: Run commands to verify the installation.
       - name: Verify Python Installation
         run: |
+          # The 'actions/setup-python' action places python on the PATH.
+          # We can just call it directly.
           python --version
           pip --version
       
       # Step 4: Install dependencies from requirements.txt.
       - name: Install Dependencies
         run: |
+          # Create a virtual environment.
           python -m venv venv
-          source venv/bin/activate || . venv/Scripts/activate
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          # Upgrade pip within the virtual environment.
+          ./venv/bin/python -m pip install --upgrade pip
+          # Install dependencies using pip from the virtual environment.
+          ./venv/bin/pip install -r requirements.txt
       
       # Step 5: Build the executable using PyInstaller.
       - name: Build Executable
         run: |
-          source venv/bin/activate || . venv/Scripts/activate
-          python build.py
+          # Use the python executable from the virtual environment to run your script.
+          ./venv/bin/python build.py
